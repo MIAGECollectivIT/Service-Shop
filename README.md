@@ -26,7 +26,7 @@ CI/CD: Run on pull request on branches //TODO
 
 ## 3. API
 
-### Lancer le docker en local
+### Lancer les conteneurs en local
 
 ````bash
 
@@ -39,7 +39,7 @@ docker compose up --build -d backend
 - GET http://localhost:8080/api/shops/{id}
 
 
-### Couper Docker
+### Couper les conteneurs
 
 ```bash
 
