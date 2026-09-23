@@ -4,6 +4,13 @@
 ## Additionnals ingores
 package-lock.json
 
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+
+# Logs
+*.log
 
 
 ### Angular ###

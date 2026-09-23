@@ -1,0 +1,7 @@
+target/
+.git
+.husky
+.github
+db/
+*.log
+.mvn/

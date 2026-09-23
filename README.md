@@ -22,3 +22,29 @@ If the pipeline rejects your commit, run manually:
 
 #### 2.1.2 GitHub Actions 
 CI/CD: Run on pull request on branches //TODO
+
+
+## 3. API
+
+### Lancer le docker en local
+
+````bash
+
+docker compose up --build -d backend
+````
+
+### Routes
+
+- GET http://localhost:8080/api/shops
+- GET http://localhost:8080/api/shops/{id}
+
+
+### Couper Docker
+
+```bash
+
+docker compose down -v
+
+```
+
+
