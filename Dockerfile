@@ -1,22 +1,35 @@
-# Étape 1 : Build de l'application
+# ==========================================
+# Étape 1 : Build de l'application (Maven + Eclipse Temurin 21)
+# ==========================================
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
-WORKDIR /app
+WORKDIR /build
 
-# Copie des fichiers de dépendances d'abord pour mettre en cache
+# Mise en cache des dépendances Maven
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copie du code source et compilation
+# Compilation et empaquetage du livrable jar
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Étape 2 : Image d'exécution légère
-FROM eclipse-temurin:21-jre-alpine
+# ==========================================
+# Étape 2 : Image d'exécution minimale ARM64 / Multi-Arch
+# ==========================================
+FROM eclipse-temurin:21-jre-alpine AS runner
 WORKDIR /app
 
-# Copie du jar compilé depuis l'étape précédente
-COPY --from=builder /app/target/*.jar app.jar
+# Sécurité : Exécution sous un utilisateur non-root dédié
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+# Copie du jar exécutable depuis le builder
+COPY --from=builder --chown=appuser:appgroup /build/target/*.jar app.jar
+
+USER appuser
+
+# Port d'écoute standard
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Options JVM optimisées pour conteneurs (K3s / cgroups)
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
