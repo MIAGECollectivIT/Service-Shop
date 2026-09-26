@@ -20,6 +20,8 @@ spec:
       labels:
         app: service-shop
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: service-shop
           image: ghcr.io/miagecollectivit/service-shop:latest
