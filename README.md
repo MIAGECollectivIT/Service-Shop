@@ -20,8 +20,17 @@ If the pipeline rejects your commit, run manually:
 |------|---------|
 |      |         |
 
-#### 2.1.2 GitHub Actions 
-CI/CD: Run on pull request on branches //TODO
+#### 2.1.2 GitHub Actions & CI/CD
+Le pipeline automatisé (`.github/workflows/deploy.yml`) se déclenche sur chaque push vers `main` :
+1. **Tests & Compilation** : `mvn clean verify` avec Java 21 Temurin.
+2. **Build & Push Docker ARM64** : Émulation QEMU, compilation native ARM64 et publication vers le registre privé GHCR (`ghcr.io/miagecollectivit/service-shop:latest`).
+3. **Déploiement K3s** : Connexion SSH sur le cluster K3s (`shoploc-server`) et `rollout restart` sans coupure de service.
+
+> **Secrets d'Organisation Requis** (`MIAGECollectivIT > Settings > Secrets and variables > Actions`) :
+> - `SSH_HOST` : IP publique du serveur K3s (`88.96.39.138`).
+> - `SSH_USER` : `ubuntu`.
+> - `SSH_KEY` : Clé privée OpenSSH dédiée au déploiement.
+> *Note : S'assurer que le dépôt est coché dans le « Repository access » de ces 3 secrets.*
 
 
 ## 3. API
