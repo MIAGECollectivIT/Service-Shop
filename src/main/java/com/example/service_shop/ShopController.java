@@ -1,5 +1,6 @@
 package com.example.service_shop;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,5 +28,12 @@ public class ShopController {
         return shopService.getShopById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // POST http://localhost:8080/api/shops
+    @PostMapping
+    public ResponseEntity<Shop> createShop(@RequestBody Shop shop) {
+        Shop createdShop = shopService.createShop(shop);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdShop);
     }
 }
